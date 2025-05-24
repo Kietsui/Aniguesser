@@ -13,9 +13,6 @@ public class MainMenu
                                             
                                             
     ";
-    public bool shouldRun = true;
-
-
     public void StartGame()
     {
         Run();
@@ -32,6 +29,7 @@ public class MainMenu
 
     public void PrintTitle()
     {
+        ConsoleHelper.SetColor("Red");
         Console.WriteLine(titleArt);
     }
 
@@ -46,9 +44,14 @@ public class MainMenu
         Console.WriteLine("1. Guess The Anime");
         Console.WriteLine("2. Guess The Character");
 
+        ConsoleHelper.SetColor("DarkRed");
+        Console.WriteLine("0. Quit");
+
         Console.WriteLine();
         string input = PlayerAnswer();
 
+        ConsoleHelper.SetColor("Blue");
+        if (input == "0") { Console.WriteLine("Goodbye!"); Environment.Exit(1); }
         if (input == "1") { GTA(); }
         if (input == "2") { GTC(); }
 
@@ -60,7 +63,6 @@ public class MainMenu
     {
         ConsoleHelper.SetColor("DarkRed");
         Console.WriteLine("Nothing here yet.");
-        Menu();
     }
 
     // Guess The Character anime list
@@ -79,12 +81,45 @@ public class MainMenu
 
         Console.WriteLine();
         Console.ResetColor();
+
+        string input = PlayerAnswer();
+        var converter = new CharacterFileConverter();
+
+        switch (input)
+    {
+        case "1":
+            var characterList = converter.ConvertCharacterJson(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "DataFiles", "CharactersOnePiece.json"));
+            var gameManager = new GameManager();
+            gameManager.OnePieceGame(characterList);
+            break;
+        case "2":
+            converter.ConvertCharacterJson(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "DataFiles", "CharactersNaruto.json"));
+            break;
+        case "3":
+            converter.ConvertCharacterJson(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "DataFiles", "CharactersBleach.json"));
+            break;
+        case "4":
+            converter.ConvertCharacterJson(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "DataFiles", "CharactersSAO.json"));
+            break;
+        case "5":
+            converter.ConvertCharacterJson(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "DataFiles", "CharactersFrieren.json"));
+            break;
+        case "6":
+            converter.ConvertCharacterJson(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "DataFiles", "CharactersSoloLeveling.json"));
+            break;
+        default:
+            ConsoleHelper.SetColor("Red");
+            Console.WriteLine("Invalid input. Please select a number from 1 to 6.");
+            Console.ResetColor();
+            break;
+    }
     }
 
 
     // Choose game mode method
     private string PlayerAnswer()
     {
+        Console.WriteLine();
         Console.ForegroundColor = ConsoleColor.Yellow;
         Console.WriteLine(" ---Enter game mode number--- ");
 
